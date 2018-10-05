@@ -28,9 +28,10 @@ namespace FinalApp.Controllers
         public async Task<IActionResult> Index()
         {
             var name = _userManager.GetUserName(User);
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            
             return View(await _context.Products
                 .AsNoTracking()
+                .Include(x => x.Category)
                 .Where(u => u.UserName == name)
                 .OrderBy(p => p.ExpirationDate)
                 .ToListAsync());
@@ -38,15 +39,8 @@ namespace FinalApp.Controllers
 
         [HttpGet]
         public ActionResult Create()
-        {
-            List<Category> Categories = new List<Category>();
-            foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-            {
-                Categories.Add(c);
-            }
-            ViewData["Categories"] = Categories;
-
-            return View();
+        {           
+            return View(populateViewModel(null)); ;
         }
 
 
@@ -56,21 +50,14 @@ namespace FinalApp.Controllers
             if (id == null)
             {
                 return NotFound();
-            }
-
-            List<Category> Categories = new List<Category>();
-            foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-            {
-                Categories.Add(c);
-            }
-            ViewData["Categories"] = Categories;
-
+            } 
+           
             var product = _context.Products.Find(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return View(new ProductViewModel(product));
+            return View(populateViewModel(product));
         }
 
         [HttpPost]
@@ -79,13 +66,7 @@ namespace FinalApp.Controllers
         {
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
-                List<Category> Categories = new List<Category>();
-                foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-                {
-                    Categories.Add(c);
-                }
-                ViewData["Categories"] = Categories;
-                return View();
+                return View(populateViewModel(product));
             }
             try
             {
@@ -119,17 +100,20 @@ namespace FinalApp.Controllers
             }
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
-                List<Category> Categories = new List<Category>();
-                foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-                {
-                    Categories.Add(c);
-                }
-                ViewData["Categories"] = Categories;
-                return View();
+                return View(populateViewModel(product));
             }
             _context.Update(product);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", _context.Products);
+        }
+
+        public ProductViewModel populateViewModel(Product product)
+        {
+            List<Category> Categories = _context.Categories.OrderBy(c => c.CategoryName).ToList(); ;
+
+            var productViewModel = new ProductViewModel(product, Categories);
+
+            return productViewModel;
         }
     }
 }
