@@ -75,10 +75,12 @@ namespace FinalApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Product product)
+        public async Task<ActionResult> Create([Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
+                // prepare category list and reload Create view, with an error message
                 List<Category> Categories = new List<Category>();
                 foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
                 {
@@ -89,6 +91,7 @@ namespace FinalApp.Controllers
             }
             try
             {
+                product.UserName = user.UserName;
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -111,14 +114,16 @@ namespace FinalApp.Controllers
         [HttpPost]
         [Route("Edit/{id:int}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, [Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate,UserName")] Product product)
+        public async Task<ActionResult> Edit(int id, [Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (id != product.ProductId)
             {
                 return NotFound();
             }
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
+                // prepare category list and reload Create view, with an error message
                 List<Category> Categories = new List<Category>();
                 foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
                 {
@@ -127,6 +132,7 @@ namespace FinalApp.Controllers
                 ViewData["Categories"] = Categories;
                 return View();
             }
+            product.UserName = user.UserName;
             _context.Update(product);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", _context.Products);
