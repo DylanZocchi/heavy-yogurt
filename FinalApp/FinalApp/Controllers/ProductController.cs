@@ -28,9 +28,10 @@ namespace FinalApp.Controllers
         public async Task<IActionResult> Index()
         {
             var name = _userManager.GetUserName(User);
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            
             return View(await _context.Products
                 .AsNoTracking()
+                .Include(x => x.Category)
                 .Where(u => u.UserName == name)
                 .OrderBy(p => p.ExpirationDate)
                 .ToListAsync());
@@ -38,15 +39,8 @@ namespace FinalApp.Controllers
 
         [HttpGet]
         public ActionResult Create()
-        {
-            List<Category> Categories = new List<Category>();
-            foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-            {
-                Categories.Add(c);
-            }
-            ViewData["Categories"] = Categories;
-
-            return View();
+        {           
+            return View(populateViewModel(null)); ;
         }
 
 
@@ -56,42 +50,28 @@ namespace FinalApp.Controllers
             if (id == null)
             {
                 return NotFound();
-            }
-
-            List<Category> Categories = new List<Category>();
-            foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-            {
-                Categories.Add(c);
-            }
-            ViewData["Categories"] = Categories;
-
+            } 
+           
             var product = _context.Products.Find(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return View(new ProductViewModel(product));
+            return View(populateViewModel(product));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
-                // prepare category list and reload Create view, with an error message
-                List<Category> Categories = new List<Category>();
-                foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-                {
-                    Categories.Add(c);
-                }
-                ViewData["Categories"] = Categories;
-                return View();
+                return View(populateViewModel(product));
             }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            product.UserName = user.UserName;
             try
             {
-                product.UserName = user.UserName;
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -116,26 +96,28 @@ namespace FinalApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, [Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (id != product.ProductId)
             {
                 return NotFound();
             }
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
-                // prepare category list and reload Create view, with an error message
-                List<Category> Categories = new List<Category>();
-                foreach (var c in _context.Categories.OrderBy(c => c.CategoryName))
-                {
-                    Categories.Add(c);
-                }
-                ViewData["Categories"] = Categories;
-                return View();
+                return View(populateViewModel(product));
             }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             product.UserName = user.UserName;
             _context.Update(product);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", _context.Products);
+        }
+
+        public ProductViewModel populateViewModel(Product product)
+        {
+            List<Category> Categories = _context.Categories.OrderBy(c => c.CategoryName).ToList(); ;
+
+            var productViewModel = new ProductViewModel(product, Categories);
+
+            return productViewModel;
         }
     }
 }

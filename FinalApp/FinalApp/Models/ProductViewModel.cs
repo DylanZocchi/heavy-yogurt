@@ -6,21 +6,16 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FinalApp.Models
 {
-    internal class ProductViewModel : Product
+    public class ProductViewModel
     {
-        public ProductViewModel() : this(null)
-        {
+        public Product product { get; set; }
+        public List<Category> Categories { get; set; }
 
-        }
-        public ProductViewModel(Product product)
+        public ProductViewModel(Product product, List<Category> category)
         {
-            ProductId = product.ProductId;
-            Category = product.Category;
-            CategoryId = product.CategoryId;
-            ProductName = product.ProductName;
-            PurchaseDate = product.PurchaseDate;
-            ExpirationDate = product.ExpirationDate;
-            UserName = product.UserName;
+            this.product = product;
+            this.Categories = category;
+
         }
     }
 
