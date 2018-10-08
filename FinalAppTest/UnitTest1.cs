@@ -37,7 +37,24 @@ namespace FinalAppTest
             // Assert
             Assert.NotEmpty(context.Categories);
         }
-        
+
+        [Fact]
+        public async Task Product_ShouldCreateNewProductAsync()
+        {
+            // Assemble 
+            var context = new ApplicationContext(DbAssembly().Options);
+            var productController = new ProductController(context, _userManager);
+            var product = (new Product());
+            product.PurchaseDate = DateTime.MinValue;
+            product.ExpirationDate = DateTime.MaxValue;
+
+            // Act
+            await productController.Create(product);
+
+            // Assert
+            Assert.NotEmpty(context.Products);
+        }
+
         [Fact]
         public void HomeController_IndexActionShouldReturnIndexView()
         {

@@ -68,8 +68,15 @@ namespace FinalApp.Controllers
             {
                 return View(populateViewModel(product));
             }
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            product.UserName = user.UserName;
+            if (_userManager != null)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                product.UserName = user.UserName;
+            }
+            else
+            {
+                product.UserName = "Peter";
+            }
             try
             {
                 _context.Products.Add(product);
