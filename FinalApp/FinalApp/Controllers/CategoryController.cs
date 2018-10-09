@@ -45,8 +45,11 @@ namespace FinalApp.Controllers
         {
             try
             {
-                _context.Categories.Add(category);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction("Index");
             }
             catch

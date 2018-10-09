@@ -73,14 +73,13 @@ namespace FinalApp.Controllers
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 product.UserName = user.UserName;
             }
-            else
-            {
-                product.UserName = "Peter";
-            }
             try
             {
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    _context.Products.Add(product);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction("Index");
             }
             catch
@@ -113,8 +112,11 @@ namespace FinalApp.Controllers
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
             product.UserName = user.UserName;
-            _context.Update(product);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index", _context.Products);
         }
 
