@@ -75,11 +75,8 @@ namespace FinalApp.Controllers
             }
             try
             {
-                if (ModelState.IsValid)
-                {
-                    _context.Products.Add(product);
-                    await _context.SaveChangesAsync();
-                }
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             catch
