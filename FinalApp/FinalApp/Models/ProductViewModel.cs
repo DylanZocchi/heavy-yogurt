@@ -8,14 +8,13 @@ namespace FinalApp.Models
 {
     public class ProductViewModel
     {
-        public Product product { get; set; }
+        public Product Product { get; set; }
         public List<Category> Categories { get; set; }
 
-        public ProductViewModel(Product product, List<Category> category)
+        public ProductViewModel(Product product, List<Category> categories)
         {
-            this.product = product;
-            this.Categories = category;
-
+            Product = product;
+            Categories = categories;
         }
     }
 

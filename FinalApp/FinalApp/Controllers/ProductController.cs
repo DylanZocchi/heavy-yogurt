@@ -40,7 +40,7 @@ namespace FinalApp.Controllers
         [HttpGet]
         public ActionResult Create()
         {           
-            return View(populateViewModel(null)); ;
+            return View(PopulateViewModel(null)); ;
         }
 
 
@@ -57,26 +57,34 @@ namespace FinalApp.Controllers
             {
                 return NotFound();
             }
-            return View(populateViewModel(product));
+            return View(PopulateViewModel(product));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
+        public async Task<ActionResult> Create([Bind("ProductId,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
-            if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
-            {
-                return View(populateViewModel(product));
-            }
+            //if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
+            //{
+            //    return View(PopulateViewModel(product));
+            //}
+            // if not unit testing method
             if (_userManager != null)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 product.UserName = user.UserName;
             }
+            ModelState.Remove("product.PurchaseDate");
+            if (!ModelState.IsValid)
+            {
+                return View(PopulateViewModel(product));
+            }
             try
             {
                 _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                {
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction("Index");
             }
             catch
@@ -105,24 +113,20 @@ namespace FinalApp.Controllers
             }
             if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
             {
-                return View(populateViewModel(product));
+                return View(PopulateViewModel(product));
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
             product.UserName = user.UserName;
-            if (ModelState.IsValid)
-            {
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-            }
+            ModelState.Remove("product.PurchaseDate");
+            _context.Update(product);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index", _context.Products);
         }
 
-        public ProductViewModel populateViewModel(Product product)
+        public ProductViewModel PopulateViewModel(Product product)
         {
-            List<Category> Categories = _context.Categories.OrderBy(c => c.CategoryName).ToList(); ;
-
+            List<Category> Categories = _context.Categories.OrderBy(c => c.CategoryName).ToList();
             var productViewModel = new ProductViewModel(product, Categories);
-
             return productViewModel;
         }
     }

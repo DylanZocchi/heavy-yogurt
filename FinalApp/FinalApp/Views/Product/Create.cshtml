@@ -15,31 +15,30 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="product.CategoryId" class="control-label">Category</label>
-                <select asp-for="product.CategoryId" class="form-control">
+                <label asp-for="Product.CategoryId" class="control-label">Category</label>
+                <select asp-for="Product.CategoryId" class="form-control">
                     @foreach (Category item in Model.Categories)
                     {
                         <option value="@item.CategoryId">@item.CategoryName</option>
                     }
                 </select>
-                <span asp-validation-for="product.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 <a asp-area="" asp-controller="Category" asp-action="Create">Add Category</a>
             </div>
-            
             <div class="form-group">
-                <label asp-for="product.ProductName" class="control-label">Product Name</label>
-                <input asp-for="product.ProductName" class="form-control" />
-                <span asp-validation-for="product.ProductName" class="text-danger"></span>
+                <label asp-for="Product.ProductName" class="control-label">Product Name</label>
+                <input asp-for="Product.ProductName" class="form-control" />
+                <span asp-validation-for="Product.ProductName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="product.PurchaseDate" class="control-label">Purchase Date</label>
-                <input type="date" asp-for="product.PurchaseDate" class="form-control" />
-                <span asp-validation-for="product.PurchaseDate" class="text-danger"></span>
+                <label asp-for="Product.PurchaseDate" class="control-label">Purchase Date</label>
+                <input type="date" asp-for="Product.PurchaseDate" class="form-control" />
+                <span asp-validation-for="Product.PurchaseDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="product.ExpirationDate" class="control-label">Expiration Date</label>
-                <input type="date" asp-for="product.ExpirationDate" class="form-control" />
-                <span asp-validation-for="product.ExpirationDate" class="text-danger"></span>
+                <label asp-for="Product.ExpirationDate" class="control-label">Expiration Date</label>
+                <input type="date" asp-for="Product.ExpirationDate" class="form-control" />
+                <span asp-validation-for="Product.ExpirationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

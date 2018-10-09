@@ -8,33 +8,31 @@ namespace FinalApp.Models
 {
     public class Product
     {
-
         public int ProductId { get; set; }
-
-        [Required]
+        
         public Category Category { get; set; }
+
+        [Required(ErrorMessage = "Product must have a category.")]
         public int CategoryId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Product must have a name.")]
         public string ProductName { get; set; }
-
-        //Purchase Date
+        
         [DataType(DataType.Date)]
-        [PastPurchaseDate]
+        [PastPurchaseDate(ErrorMessage = "Purchase date must be past or current date.")]
         public DateTime PurchaseDate { get; set; }
-
-        //Expiration Date
-        [Required]
+        
         [DataType(DataType.Date)]
-        [FutureExpirationDate]
+        [FutureExpirationDate(ErrorMessage = "Expiration date must be in the future.")]
         public DateTime ExpirationDate { get; set; }
 
         public string UserName { get; set; }
-        
+
         public class PastPurchaseDate : ValidationAttribute
         {
             public override bool IsValid(object date)
             {
+                if (date == null) return true;
                 DateTime purchaseDate = (DateTime)date;
                 return purchaseDate < DateTime.Now;
             }
