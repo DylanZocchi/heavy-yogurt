@@ -43,7 +43,6 @@ namespace FinalApp.Controllers
             return View(PopulateViewModel(null)); ;
         }
 
-
         [Route("Edit/{id:int}")]
         public ActionResult Edit(int? id)
         {
@@ -64,10 +63,6 @@ namespace FinalApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("ProductId,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
-            //if (product.PurchaseDate > DateTime.Now || product.ExpirationDate <= DateTime.Now)
-            //{
-            //    return View(PopulateViewModel(product));
-            //}
             // if not unit testing method
             if (_userManager != null)
             {

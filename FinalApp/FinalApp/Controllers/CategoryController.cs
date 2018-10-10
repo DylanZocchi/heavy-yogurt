@@ -43,15 +43,27 @@ namespace FinalApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Category category)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return View();
             }
-            catch
+            if (_context.Categories.FirstOrDefault(c => c.CategoryName == category.CategoryName) == null)
             {
-                return View("Index");
+                try
+                {
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                ViewBag.message = "Category already exists.";
+                return View();
             }
         }
 

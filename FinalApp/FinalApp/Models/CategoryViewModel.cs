@@ -13,10 +13,8 @@ namespace FinalApp.Models
         }
         public CategoryViewModel(Category category)
         {
-            
             CategoryId = category.CategoryId;
             CategoryName = category.CategoryName;
-
         }
     }
 }
