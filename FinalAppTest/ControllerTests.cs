@@ -18,7 +18,7 @@ using Moq;
 
 namespace FinalAppTest
 {
-    public class UnitTest1
+    public class ControllerTests
     {
         private static readonly HttpClient client = new HttpClient();
         private static readonly UserManager<IdentityUser> _userManager;
