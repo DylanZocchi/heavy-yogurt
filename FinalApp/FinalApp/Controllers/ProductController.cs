@@ -38,28 +38,14 @@ namespace FinalApp.Controllers
         }
 
         [HttpGet]
+        [Route("Create/")]
         public ActionResult Create()
         {           
             return View(PopulateViewModel(null)); ;
         }
 
-        [Route("Edit/{id:int}")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            } 
-           
-            var product = _context.Products.Find(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(PopulateViewModel(product));
-        }
-
         [HttpPost]
+        [Route("Create/")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("ProductId,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
         {
@@ -86,6 +72,19 @@ namespace FinalApp.Controllers
             {
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpGet]
+        [Route("Edit/{id:int}")]
+        public async Task<ActionResult> Edit(int? id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var product = _context.Products.Find(id);
+            if (product.UserName != user.UserName || id == null || product == null)
+            {
+                return NotFound();
+            }
+            return View(PopulateViewModel(product));
         }
 
         public async Task<ActionResult> Delete(Product product)
