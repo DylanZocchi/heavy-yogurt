@@ -100,7 +100,7 @@ namespace FinalApp.Controllers
         [HttpPost]
         [Route("Edit/{id:int}")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, [Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate")] Product product)
+        public async Task<ActionResult> Edit(int id, [Bind("ProductId,Category,CategoryId,ProductName,PurchaseDate,ExpirationDate,UserName")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -111,10 +111,11 @@ namespace FinalApp.Controllers
                 return View(PopulateViewModel(product));
             }
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            product.UserName = user.UserName;
-            ModelState.Remove("product.PurchaseDate");
-            _context.Update(product);
-            await _context.SaveChangesAsync();
+            if (product.UserName == user.UserName)
+            {
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index", _context.Products);
         }
 
