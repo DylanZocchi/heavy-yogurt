@@ -28,7 +28,7 @@ namespace FinalAppTest
         {
             // Assemble
             var context = new ApplicationContext(DbAssembly().Options);
-            var categoryController = new CategoryController(context);
+            var categoryController = new CategoryController(context, _userManager);
             var category = (new Category());
 
             // Act

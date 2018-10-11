@@ -12,6 +12,8 @@ namespace FinalApp.Models
 
         [Required(ErrorMessage = "Category name may not be blank.")]
         public string CategoryName { get; set; }
+        
+        public string UserName { get; set; }
     }
     
 }

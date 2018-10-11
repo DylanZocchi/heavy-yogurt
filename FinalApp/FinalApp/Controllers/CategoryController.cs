@@ -16,23 +16,27 @@ namespace FinalApp.Controllers
     public class CategoryController : Controller
     {
         public ApplicationContext _context { get; set; }
-        public CategoryController(ApplicationContext context)
+        private UserManager<IdentityUser> _userManager;
+
+        public CategoryController(ApplicationContext context, UserManager<IdentityUser> userManager)
         {
-                _context = context;
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: Category
         public async Task<ActionResult> Index()
         {
+            var name = _userManager.GetUserName(User);
             return View(await _context.Categories
                 .AsNoTracking()
                 .OrderBy(c => c.CategoryName)
+                .Where(u => u.UserName == name)
                 .ToListAsync());
         }
 
 
         // GET: Category/Create
-        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -43,6 +47,12 @@ namespace FinalApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Category category)
         {
+            // if not unit testing method
+            if (_userManager != null)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                category.UserName = user.UserName;
+            }
             if (!ModelState.IsValid)
             {
                 return View();

@@ -15,6 +15,7 @@ namespace FinalApp.Models
         {
             CategoryId = category.CategoryId;
             CategoryName = category.CategoryName;
+            UserName = category.UserName;
         }
     }
 }
