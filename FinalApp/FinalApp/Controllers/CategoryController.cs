@@ -57,7 +57,7 @@ namespace FinalApp.Controllers
             {
                 return View();
             }
-            if (_context.Categories.FirstOrDefault(c => c.CategoryName == category.CategoryName) == null)
+            if (_context.Categories.FirstOrDefault(c => c.CategoryName == category.CategoryName && c.UserName == category.UserName) == null)
             {
                 try
                 {
