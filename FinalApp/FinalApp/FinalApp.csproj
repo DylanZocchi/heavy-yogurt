@@ -21,7 +21,8 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Migrations\IdentityDb\" />    
+    <Folder Include="Migrations\IdentityDb\" />
+    <Folder Include="Views\Home\" />    
   </ItemGroup>
 
   <ItemGroup>
