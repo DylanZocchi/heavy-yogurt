@@ -5,6 +5,7 @@
     <UserSecretsId>63d67dc5-09cb-4fc5-a66f-2b5b90dfcba2</UserSecretsId>
     <ApplicationIcon>Resources\EXP.ico</ApplicationIcon>
     <Win32Resource />
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
 
   <ItemGroup>
