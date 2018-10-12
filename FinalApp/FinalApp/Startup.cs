@@ -110,7 +110,6 @@ namespace FinalApp
                     context.Database.Migrate();
                 }
 
-
                 using (var context = serviceScope.ServiceProvider.GetService<MyIdentityContext>())
                 {
                     context.Database.Migrate();
