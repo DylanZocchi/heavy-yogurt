@@ -9,14 +9,24 @@ namespace FinalApp.Migrations.Application
             migrationBuilder.AlterColumn<string>(
                 name: "CategoryName",
                 table: "Categories",
-                nullable: false,
+                nullable: true,
                 oldClrType: typeof(string),
-                oldNullable: true);
+                oldNullable: true,
+                defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "UserName",
                 table: "Categories",
                 nullable: true);
+
+            migrationBuilder.Sql("UPDATE Categories SET CategoryName = '<UNKNOWN>' WHERE CategoryName IS NULL");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "CategoryName",
+                table: "Categories",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldNullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

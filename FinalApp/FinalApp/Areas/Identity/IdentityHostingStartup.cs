@@ -26,7 +26,6 @@ namespace FinalApp.Areas.Identity
                     {
                         config.SignIn.RequireConfirmedEmail = true;
                     })
-                
                 .AddDefaultUI()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<MyIdentityContext>();
