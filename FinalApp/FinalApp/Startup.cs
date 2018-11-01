@@ -30,7 +30,14 @@ namespace FinalApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication();
+            
+            services.AddAuthentication().AddMicrosoftAccount(opts =>
+            {
+                var settings = Configuration.GetSection("Microsoft").Get<BaseProject.MicrosoftSettings>();
+                opts.ClientId = settings.Key;
+                opts.ClientSecret = settings.Secret;
+                opts.CallbackPath = "/signin-microsoft";
+            });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
